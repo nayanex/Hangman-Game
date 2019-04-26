@@ -1,0 +1,11 @@
+{% extends "hangman_app/layout.html" %}
+{% block title %}
+    Player Username
+{% endblock %}
+{% block content %}
+    <form method="POST" class="log-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Create User</button>
+    </form>
+{% endblock %}

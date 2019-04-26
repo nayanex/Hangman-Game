@@ -1,0 +1,32 @@
+{% extends "hangman_app/layout.html" %}
+{% block title %}
+    Home
+{% endblock %}
+{% block content %}
+    <h2>Players</h2>
+
+    {% if player_list %}
+        <table class="player_list">
+            <thead>
+            <tr>
+                <th>Username</th>
+                <th>Lost Games</th>
+                <th>Won Games</th>
+                <th>High Score</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for player in player_list %}
+                <tr>
+                    <td>{{ player.username }}</td>
+                    <td>{{ player.lost_games }}</td>
+                    <td>{{ player.won_games }}</td>
+                    <td>{{ player.high_score }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No player registered yet. Use the <a href="{% url 'create_user' %}">Create user form</a>.</p>
+    {% endif %}
+{% endblock %}

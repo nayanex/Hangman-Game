@@ -77,4 +77,138 @@ If we like Pyflakes but also want stylistic checks, we can use flake8, which com
 
 `pip3 install flake8`
 
+# **Game API**
+
+
+# **Install Django**
+
+`pip3 install Django`
+
+## **Creating a Project**
+
+`django-admin startproject <my-project-name> .`
+
+This will create a **my-project-name** directory in your current directory.
+
+# **The development server**
+
+Let’s verify your Django project works.
+
+`python manage.py runserver`
+
+You’ve started the Django development server, a lightweight Web server written purely in Python.
+
+### **Changing the Port**
+
+By default, the runserver command starts the development server on the internal IP at port 8000.
+
+If you want to change the server’s port, pass it as a command-line argument. For instance, this command starts the server on port 8080:
+
+`python manage.py runserver 8080`
+
+If you want to change the server’s IP, pass it along with the port. So to listen on all public IPs (useful if you want to show off your work on other computers on your network), use:
+
+`python manage.py runserver 0.0.0.0:8000`
+
+## Creating an app
+
+To create your app, make sure you’re in the same directory as manage.py and type this command:
+
+`python manage.py startapp <app-name>`
+
+## **Use the collectstatic command**
+
+For production deployments, you typically collect all the static files from your apps into a single folder using the python manage.py collectstatic command. You can then use a dedicated static file server to serve those files, which typically results in better overall performance. The following steps show how this collection is made, although you don't use the collection when running with the Django development server.
+
+1. In `works_single_view/settings.py`, add the following line that defines a location where static files are collected when you use the `collectstatic` command:
+
+`STATIC_ROOT = os.path.join(BASE_DIR, 'static_collected')`
+
+2. In the Terminal, run the command `python manage.py collectstatic` and observe that `works_single_view_app/site.css` is copied into the top level `static_collected` folder alongside `manage.py`.
+
+3. In practice, run `collectstatic` any time you change static files and before deploying into production.
+
+
+## **Work With Data, Data Models, and Migrations**
+
+Many web apps work with information stored in a database, and Django makes it easy to represent the objects in that database using models. In Django, a model is a Python class, derived from `django.db.models.Model`, that represents a specific database object, typically a table. You place these classes in an app's `models.py` file.
+
+With Django, your work with your database almost exclusively through the models you define in code. Django's "migrations" then handle all the details of the underlying database automatically as you evolve the models over time. The general workflow is as follows:
+
+1. Make changes to the models in your `models.py` file.
+2. Run `python manage.py makemigrations` to generate scripts in the migrations folder that migrate the database from its current state to the new state.
+3. Run `python manage.py migrate` to apply the scripts to the actual database.
+
+## **API Endpoints**
+
+* create_user: takes a username and create a unique user.
+
+>**Path**: 'user'
+
+>**Method**: POST
+
+>**Parameters**: user_name
+
+>**Returns**: A string confirming that the user has been created
+
+>**Description**: creates a user and returns a message confiming the user's creation
+
+* create_new_game: takes an existing username as well as an answer and a number of strikes to create a new game.
+
+
+>**Path**: 'game'
+
+>**Method**: POST
+
+>**Parameters**: user_name, answer, strikes
+
+>**Returns**: A GameForm message
+
+>**Description**: creates a game and returns a GameForm message with the gam's initial state
+
+* play_turn:
+
+> **Path**: 'game/{urlsafe_game_key}'
+
+> **Method**: PUT
+
+> **Parameters**: urlsafe game key, guess
+
+> **Returns**: A GameForm with the current game state
+
+> **Description**: takes a urlsafe game key and a guess to play a round of Hangman. This is effectively the main component of the game.
+
+* get_user_scores:
+
+> **Path**: scores/user/{user_name}'
+
+> **Method**: GET
+
+> **Parameters**: user_name
+
+> **Returns**: a list of ScoreForms containing a player's scores
+
+> **Description**: returns all scores for an existing user.
+
+* get_high_scores:
+
+> **Path**: 'high_scores'
+
+> **Method**: GET
+
+> **Parameters**: None, number of scores (optional)
+
+> **Returns**: a list of scores in descending order
+
+> **Description**: returns all scores in descending order. It also take an optional parameter to limit the number of records returned.
+
+
+
+
+
+
+
+
+
+
 
