@@ -1,0 +1,35 @@
+{% extends "hangman_app/layout.html" %}
+{% block title %}
+    Hangman Game
+{% endblock %}
+{% block content %}
+<div class="modal" tabindex="-1" role="dialog" id="userModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Type Username</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12">
+                    <form action="{% url 'game' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="player" class="col-md-2 col-form-label">Username</label>
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="player" name="player" placeholder="Username">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="submitUser">Submit User</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

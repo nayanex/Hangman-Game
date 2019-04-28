@@ -35,7 +35,7 @@ O   |
     ===''']
 
 
-def getRandomWord(wordList):
+def get_random_word(wordList):
     """
     Returns a random string.
 
@@ -49,55 +49,55 @@ def getRandomWord(wordList):
     return wordList[wordIndex]
 
 
-def displayBoard(missedCharacters, correctCharacters, secretWord):
+def display_board(missed_characters, correct_characters, secret_word):
     """
     Display Game board to the user.
 
     Keyword arguments:
-        missedCharacters -- wrong user choices
-        correctCharacters -- correct user choices
-        secretWord -- word to be guessed
+        missed_characters -- wrong user choices
+        correct_characters -- correct user choices
+        secret_word -- word to be guessed
     """
-    print(HANGMAN_PICS[len(missedCharacters)])
+    print(HANGMAN_PICS[len(missed_characters)])
     print()
-    print('Missed Characters:', end=' ')
-    for Characters in missedCharacters:
-        print(Characters, end=' ')
-    print()
-
-    blanks = '_' * len(secretWord)
-
-    for i in range(len(secretWord)):
-        if secretWord[i] in correctCharacters:
-            blanks = blanks[:i] + secretWord[i] + blanks[i+1:]
-
-    for Characters in blanks:
-        print(Characters, end=' ')
+    print('Missed characters:', end=' ')
+    for character in missed_characters:
+        print(character, end=' ')
     print()
 
+    blanks = '_' * len(secret_word)
 
-def getGuess(alreadyGuessed):
+    for i in range(len(secret_word)):
+        if secret_word[i] in correct_characters:
+            blanks = blanks[:i] + secret_word[i] + blanks[i+1:]
+
+    for characters in blanks:
+        print(characters, end=' ')
+    print()
+
+
+def get_guess(already_guessed):
     """
     Assures that player entered a valid character.
 
     Keyword arguments:
-        alreadyGuessed -- previously typed characters
+        already_guessed -- previously typed characters
     """
     while True:
         print('Guess a Character.')
         guess = input()
         guess = guess.lower()
         if len(guess) != 1:
-            print('Please enter a single Characters.')
-        elif guess in alreadyGuessed:
-            print('You have already guessed that Characters. Choose again.')
+            print('Please enter a single characters.')
+        elif guess in already_guessed:
+            print('You have already guessed that characters. Choose again.')
         elif guess not in '0123456789abcdefghijklmnopqrstuvwxyz':
             print('Please enter an alphanumeric character.')
         else:
             return guess
 
 
-def playAgain():
+def play_again():
     """
     Ask if user wants to play again.
 
@@ -110,42 +110,42 @@ def playAgain():
 
 
 print('H A N G M A N')
-missedCharacters = ''
-correctCharacters = ''
-secretWord = getRandomWord(words)
-gameIsFinished = False
+missed_characters = ''
+correct_characters = ''
+secret_word = get_random_word(words)
+game_is_finished = False
 
 while True:
-    displayBoard(missedCharacters, correctCharacters, secretWord)
+    display_board(missed_characters, correct_characters, secret_word)
 
-    guess = getGuess(missedCharacters + correctCharacters)
-    if guess in secretWord:
-        correctCharacters = correctCharacters + guess
-        foundAllCharacters = True
-        for i in range(len(secretWord)):
-            if secretWord[i] not in correctCharacters:
-                foundAllCharacters = False
+    guess = get_guess(missed_characters + correct_characters)
+    if guess in secret_word:
+        correct_characters = correct_characters + guess
+        found_all_characters = True
+        for i in range(len(secret_word)):
+            if secret_word[i] not in correct_characters:
+                found_all_characters = False
                 break
-        if foundAllCharacters:
-            print('Yes! The secret word is "' + secretWord +
+        if found_all_characters:
+            print('Yes! The secret word is "' + secret_word +
                   '"! You have won!')
-            gameIsFinished = True
+            game_is_finished = True
     else:
-        missedCharacters = missedCharacters + guess
+        missed_characters = missed_characters + guess
 
-        if len(missedCharacters) == len(HANGMAN_PICS) - 1:
-            displayBoard(missedCharacters, correctCharacters, secretWord)
+        if len(missed_characters) == len(HANGMAN_PICS) - 1:
+            display_board(missed_characters, correct_characters, secret_word)
             print('You have run out of guesses!\nAfter ' +
-                  str(len(missedCharacters)) + ' missed guesses and ' +
-                  str(len(correctCharacters)) + ' correct guesses,' +
-                  'the word was "' + secretWord + '"')
-            gameIsFinished = True
+                  str(len(missed_characters)) + ' missed guesses and ' +
+                  str(len(correct_characters)) + ' correct guesses,' +
+                  'the word was "' + secret_word + '"')
+            game_is_finished = True
 
-    if gameIsFinished:
-        if playAgain():
-            missedCharacters = ''
-            correctCharacters = ''
-            gameIsFinished = False
-            secretWord = getRandomWord(words)
+    if game_is_finished:
+        if play_again():
+            missed_characters = ''
+            correct_characters = ''
+            game_is_finished = False
+            secret_word = get_random_word(words)
         else:
             break

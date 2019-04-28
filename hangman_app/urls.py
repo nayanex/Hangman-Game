@@ -9,8 +9,9 @@ home_list_view = views.HomeListView.as_view(
 )
 
 urlpatterns = [
-    path("new_game/", views.new_game, name="new_game"),
     path("", home_list_view, name="home"),
+    path("new_game/", views.new_game, name="new_game"),
     path("add_char", views.add_char, name="add_char"),
     path("user/", views.create_user, name="create_user"),
+    path("game/", views.game, name="game"),
 ]
