@@ -2,10 +2,10 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView
 
 from hangman_app.forms import PlayerForm
-from hangman_app.hangman import HangmanGame
+from hangman_app.hangman import HangmanGame, is_valid_guess, is_game_won,\
+    is_game_over, generate_board
 from hangman_app.models import Player
-from hangman_app.utils import is_valid_guess, is_game_won, is_game_over,\
-    generate_board
+from hangman_app.model_manager import update_player
 
 
 class HomeListView(ListView):
@@ -23,6 +23,9 @@ def create_user(request):
     if request.method == "POST":
         if form.is_valid():
             player = form.save(commit=False)
+            player.won_games = 0
+            player.lost_games = 0
+            player.high_score = 0
             player.save()
             return redirect("home")
     else:
@@ -46,6 +49,7 @@ def game(request):
         request.session['is_game_done'] = hangman_game.is_game_done
         request.session['alpha_numeric_list'] = hangman_game.alpha_numeric_list
         request.session['cells'] = hangman_game.cells
+        request.session['invalid_guess_msg'] = hangman_game.invalid_guess_msg
         context = {
             'player': request.session['player'],
             'secret_word': request.session['secret_word'],
@@ -56,7 +60,8 @@ def game(request):
             'is_game_won': request.session['is_game_won'],
             'is_game_done': request.session['is_game_done'],
             'alpha_numeric_list': request.session['alpha_numeric_list'],
-            'cells': request.session['cells']
+            'cells': request.session['cells'],
+            'invalid_guess_msg': request.session['invalid_guess_msg']
         }
         return render(request, 'hangman_app/game.html', context)
 
@@ -70,12 +75,12 @@ def add_char(request):
         already_guessed = request.session['missed_characters'] + \
             request.session['correct_characters']
 
-        if is_valid_guess(already_guessed, request.session['guess']):
-            request.session['correct_characters'] =\
-                request.session['correct_characters'] + \
-                request.session['guess']
+        if is_valid_guess(already_guessed, request.session['guess'])[0]:
             if request.session['guess'].lower() in\
                     request.session['secret_word']:
+                request.session['correct_characters'] =\
+                    request.session['correct_characters'] + \
+                    request.session['guess']
                 request.session['is_game_won'] = is_game_won(
                     request.session['secret_word'],
                     request.session['correct_characters'])
@@ -91,24 +96,28 @@ def add_char(request):
             request.session['hangman'] = len(
                 request.session['missed_characters'])
 
-            context = {
-                'player': request.session['player'],
-                'secret_word': request.session['secret_word'],
-                'hangman': request.session['hangman'],
-                'missed_characters': request.session['missed_characters'],
-                'correct_characters': request.session['correct_characters'],
-                'is_game_won': request.session['is_game_won'],
-                'is_game_over': request.session['is_game_over'],
-                'alpha_numeric_list': request.session['alpha_numeric_list'],
-                'cells': request.session['cells'],
-                'guess': request.session['guess'],
-                'is_game_done': request.session['is_game_won'] or
-                request.session['is_game_over'],
-            }
-            return render(request, 'hangman_app/game.html', context)
-        else:
-            context['invalid_guess_msg'] = is_valid_guess(
-                already_guessed, request.session['guess'])
-            return render(request, 'hangman_app/game.html', context)
+        request.session['invalid_guess_msg'] = is_valid_guess(
+            already_guessed, request.session['guess'])[1]
+
+        context = {
+            'player': request.session['player'],
+            'secret_word': request.session['secret_word'],
+            'hangman': request.session['hangman'],
+            'missed_characters': request.session['missed_characters'],
+            'correct_characters': request.session['correct_characters'],
+            'is_game_won': request.session['is_game_won'],
+            'is_game_over': request.session['is_game_over'],
+            'alpha_numeric_list': request.session['alpha_numeric_list'],
+            'cells': request.session['cells'],
+            'guess': request.session['guess'],
+            'invalid_guess_msg': request.session['invalid_guess_msg'],
+        }
+
+        if request.session['is_game_won']:
+            update_player(request.session['player'], 0, 1)
+        elif request.session['is_game_over']:
+            update_player(request.session['player'], 1, 0)
+
+        return render(request, 'hangman_app/game.html', context)
     else:
-        return render(request, "hangman_app/game.html")
+        return render(request, "hangman_app/home.html")

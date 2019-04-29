@@ -20,6 +20,11 @@
                 <span class="alpha">{{character}}</span>
             {% endfor %}
         </div>
+        {% if invalid_guess_msg|length > 1 %}
+        <div class="error-message">
+            <span class="error-text">{{invalid_guess_msg}}</span>
+        </div>
+        {% endif %}
     </div>
     {% if not is_game_over %}
     <div class="col-md-4">
@@ -37,6 +42,9 @@
     {% else %}
         <div class="col-md-4">
             {% load static %}<img src="{% static "hangman_app/imgs/game_over.gif" %}" alt="Winner">
+            <p>Correct Guesses: {{correct_characters|length}}</p>
+            <p>Missed Guesses: {{missed_characters|length}}</p>
+            <p>The word was: <strong class="words">{{secret_word}}</strong>.</p>
         </div>
     {% endif %}
 </div>
