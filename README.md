@@ -1,3 +1,16 @@
+# Basic Instrctions
+
+To run the first version of the Hangman game, just execute:
+
+`python3 hangman_exe.py`
+
+This is a simple console game.
+
+In order to run the web version, execute:
+
+`python manage.py runserver`
+
+
 # **Project SetUp**
 
 To create a virtual environment, use the following command, where `".venv"` is the name of the environment folder:
@@ -138,77 +151,4 @@ With Django, your work with your database almost exclusively through the models 
 1. Make changes to the models in your `models.py` file.
 2. Run `python manage.py makemigrations` to generate scripts in the migrations folder that migrate the database from its current state to the new state.
 3. Run `python manage.py migrate` to apply the scripts to the actual database.
-
-## **API Endpoints**
-
-* create_user: takes a username and create a unique user.
-
->**Path**: 'user'
-
->**Method**: POST
-
->**Parameters**: user_name
-
->**Returns**: A string confirming that the user has been created
-
->**Description**: creates a user and returns a message confiming the user's creation
-
-* create_new_game: takes an existing username as well as an answer and a number of strikes to create a new game.
-
-
->**Path**: 'game'
-
->**Method**: POST
-
->**Parameters**: user_name, answer, strikes
-
->**Returns**: A GameForm message
-
->**Description**: creates a game and returns a GameForm message with the gam's initial state
-
-* play_turn:
-
-> **Path**: 'game/{urlsafe_game_key}'
-
-> **Method**: PUT
-
-> **Parameters**: urlsafe game key, guess
-
-> **Returns**: A GameForm with the current game state
-
-> **Description**: takes a urlsafe game key and a guess to play a round of Hangman. This is effectively the main component of the game.
-
-* get_user_scores:
-
-> **Path**: scores/user/{user_name}'
-
-> **Method**: GET
-
-> **Parameters**: user_name
-
-> **Returns**: a list of ScoreForms containing a player's scores
-
-> **Description**: returns all scores for an existing user.
-
-* get_high_scores:
-
-> **Path**: 'high_scores'
-
-> **Method**: GET
-
-> **Parameters**: None, number of scores (optional)
-
-> **Returns**: a list of scores in descending order
-
-> **Description**: returns all scores in descending order. It also take an optional parameter to limit the number of records returned.
-
-
-
-
-
-
-
-
-
-
 
