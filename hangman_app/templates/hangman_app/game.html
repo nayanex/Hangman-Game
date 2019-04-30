@@ -10,7 +10,7 @@
         <img src ="{% static 'hangman_app/imgs/hangman' %}{{hangman}}.png" alt="Hangman">
     </div>
     <div class="col-md-4">
-        <div>{{secret_word}}
+        <div>
             {% for character in cells %}
                 <span class="board_cells"> {{character}} </span>
             {% endfor %}
